@@ -127,3 +127,10 @@ code {
         border-bottom-color: inherit;
     }
 }
+a[href*="emergent"],
+div[style*="position: fixed"][style*="bottom"],
+iframe[src*="emergent"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
