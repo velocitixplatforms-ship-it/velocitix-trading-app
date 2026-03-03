@@ -6,7 +6,9 @@ const { v4: uuidv4 } = require("uuid");
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
-
+app.get("/", (req, res) => {
+  res.send("VelocitiX Backend Running");
+});
 let users = [
   {
     id: uuidv4(),
