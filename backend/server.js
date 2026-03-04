@@ -39,7 +39,21 @@ app.post("/api/auth/login", (req, res) => {
       },
   });
 });
+app.get("/api/auth/me", (req, res) => {
+  const token = req.headers.authorization.split(" ")[1];
 
+  const user = users.find(u => u.id === token);
+
+  if (!user) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  res.json({
+    id: user.id,
+    email: user.email,
+    balance: user.balance
+  });
+});
 app.get("/balance/:userId", (req, res) => {
   const user = users.find(u => u.id === req.params.userId);
 
