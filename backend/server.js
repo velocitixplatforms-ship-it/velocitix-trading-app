@@ -70,6 +70,17 @@ app.get("/api/account/summary", (req, res) => {
     total_pnl: 0
   });
 });
+app.get("/api/positions", (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1];
+
+  const user = users.find(u => u.id === token);
+
+  if (!user) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  res.json(user.trades || []);
+});
 app.get("/balance/:userId", (req, res) => {
   const user = users.find(u => u.id === req.params.userId);
 
