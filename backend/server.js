@@ -31,9 +31,12 @@ app.post("/api/auth/login", (req, res) => {
   }
 
   res.json({
-    message: "Login successful",
-    userId: user.id,
+    token: user.id,
+      user: {
+    id: user.id,
+    email: user.email,
     balance: user.balance
+      },
   });
 });
 
