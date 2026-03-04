@@ -19,7 +19,7 @@ let users = [
   }
 ];
 
-app.post("/login", (req, res) => {
+app.post("/api/auth/login", (req, res) => {
   const { email, password } = req.body;
 
   const user = users.find(
