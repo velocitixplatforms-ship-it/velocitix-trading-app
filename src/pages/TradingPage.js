@@ -132,7 +132,7 @@ const TradingPage = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col relative z-0">
+      <div className="flex-1 flex flex-col">
         {/* Chart Section */}
         <div className="flex-1 bg-[#0A0A0A] p-4">
           <div className="h-full bg-[#121212] border border-white/5 rounded-xl overflow-hidden">
@@ -154,7 +154,7 @@ const TradingPage = () => {
                 )}
               </div>
             </div>
-            <div className="h-[calc(100%-100px)] relative z-0 bg-[#131722] rounded-lg border border-[#1f2937] p-3">
+            <div className="h-[calc(100%-100px)] bg-[#131722] rounded-lg border border-[#1f2937] p-3">
               <TradingChart 
                 symbol={selectedSymbol} 
                 currentPrice={selectedSymbolData?.price || 0}
@@ -165,7 +165,7 @@ const TradingPage = () => {
       </div>
 
       {/* Order Panel */}
-      <div className="w-full lg:w-96 bg-[#131722] border-l border-white/5 flex flex-col relative z-0">
+      <div className="w-full lg:w-96 bg-[#131722] border-l border-white/5 flex flex-col">
         <div className="p-4 border-b border-white/5">
           <h2 className="text-lg font-semibold text-white flex items-center">
             <Activity className="w-5 h-5 mr-2 text-blue-500" />
