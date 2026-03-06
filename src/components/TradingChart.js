@@ -266,17 +266,6 @@ const TradingChart = ({ symbol, currentPrice }) => {
             return '₹' + price.toFixed(2);
           },
         },
-        handleScroll: {
-          mouseWheel: true,
-          pressedMouseMove: true,
-          horzTouchDrag: true,
-          vertTouchDrag: true,
-        },
-        handleScale: {
-          axisPressedMouseMove: true,
-          mouseWheel: true,
-          pinch: true,
-        },
       });
       chart.subscribeCrosshairMove(() => {});
 
