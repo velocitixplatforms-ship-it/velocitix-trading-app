@@ -598,7 +598,7 @@ const TradingChart = ({ symbol, currentPrice }) => {
       {/* Main Chart */}
       <div 
         ref={chartContainerRef} 
-        className="flex-1 w-full"
+        className="flex-1 w-full pointer-events-auto"
         style={{ minHeight: 0 }}
       />
       
