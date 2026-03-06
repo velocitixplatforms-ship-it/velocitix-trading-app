@@ -327,6 +327,7 @@ const TradingChart = ({ symbol, currentPrice }) => {
     if (!shouldRegenerate) return;
 
     try {
+      lockedHistoricalRef.current = null;
       const data = generateHistoricalData(currentPrice, selectedTimeframe);
       setHistoricalData(data);
       candlestickSeriesRef.current.setData(data);
