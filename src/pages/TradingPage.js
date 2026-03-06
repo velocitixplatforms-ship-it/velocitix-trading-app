@@ -14,7 +14,7 @@ const API = `${BACKEND_URL}/api`;
 
 const TradingPage = () => {
   const { getAuthHeader } = useAuth();
-  const { symbols, selectedSymbol, setSelectedSymbol } = useMarketData();
+  const { symbols = [], selectedSymbol = 'NIFTY 50', setSelectedSymbol } = useMarketData();
   const [quantity, setQuantity] = useState(1);
   const [orderType, setOrderType] = useState('market');
   const [limitPrice, setLimitPrice] = useState('');
