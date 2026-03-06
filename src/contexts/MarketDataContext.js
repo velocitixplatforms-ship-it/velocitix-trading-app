@@ -15,7 +15,36 @@ export const useMarketData = () => {
 };
 
 export const MarketDataProvider = ({ children }) => {
-  const [symbols, setSymbols] = useState([]);
+  const [symbols, setSymbols] = useState([
+  {
+    symbol: "NIFTY 50",
+    name: "NIFTY 50 Index",
+    price: 22500,
+    change: 120,
+    change_percent: 0.54
+  },
+  {
+    symbol: "BANKNIFTY",
+    name: "Bank Nifty",
+    price: 48000,
+    change: -150,
+    change_percent: -0.31
+  },
+  {
+    symbol: "RELIANCE",
+    name: "Reliance Industries",
+    price: 2950,
+    change: 12,
+    change_percent: 0.41
+  },
+  {
+    symbol: "INFY",
+    name: "Infosys",
+    price: 1650,
+    change: -8,
+    change_percent: -0.48
+  }
+]);
   const [selectedSymbol, setSelectedSymbol] = useState('NIFTY 50');
   const [loading, setLoading] = useState(false);
 
