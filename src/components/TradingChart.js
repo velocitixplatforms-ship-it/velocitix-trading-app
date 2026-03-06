@@ -224,6 +224,9 @@ const TradingChart = ({ symbol, currentPrice }) => {
       const chart = createChart(chartContainerRef.current, {
         width: chartContainerRef.current.clientWidth,
         height: indicators.rsi ? chartContainerRef.current.clientHeight * 0.7 : chartContainerRef.current.clientHeight,
+
+        handleScroll: false,
+        handleScale: false,
         layout: {
           background: { type: 'solid', color: '#131722' },
           textColor: '#d1d4dc',
@@ -598,8 +601,8 @@ const TradingChart = ({ symbol, currentPrice }) => {
       {/* Main Chart */}
       <div 
         ref={chartContainerRef} 
-        className="flex-1 w-full pointer-events-auto"
-        style={{ minHeight: 0 }}
+        className="flex-1 w-full"
+        style={{ minHeight: 0, pointerEvents: "none" }}
       />
       
       {/* RSI Chart */}
