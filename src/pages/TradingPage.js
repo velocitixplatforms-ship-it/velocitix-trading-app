@@ -80,7 +80,7 @@ const TradingPage = () => {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row h-full overflow-hidden relative z-10" data-testid="trading-page">
+    <div className="flex flex-col lg:flex-row h-full overflow-hidden" data-testid="trading-page">
       {/* Watchlist Sidebar */}
       <div className="w-full lg:w-80 bg-[#131722] border-r border-white/5 flex flex-col">
         <div className="p-4 border-b border-white/5">
