@@ -596,7 +596,7 @@ const TradingChart = ({ symbol, currentPrice }) => {
       <div 
         ref={chartContainerRef} 
         className="flex-1 w-full"
-        style={{ minHeight: 0 }}
+        style={{ minHeight: 0, pointerEvents: "none" }}
       />
       
       {/* RSI Chart */}
