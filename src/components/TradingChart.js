@@ -267,8 +267,7 @@ const TradingChart = ({ symbol, currentPrice }) => {
           },
         },
       });
-      chart.subscribeCrosshairMove(() => {});
-
+      
       const candlestickSeries = chart.addCandlestickSeries({
         upColor: '#22c55e',
         downColor: '#ef4444',
@@ -591,7 +590,7 @@ const TradingChart = ({ symbol, currentPrice }) => {
       <div 
         ref={chartContainerRef} 
         className="flex-1 w-full relative z-0"
-        style={{ minHeight: 0, pointerEvents: "none" }}
+        style={{ minHeight: 0 }}
       />
       
       {/* RSI Chart */}
