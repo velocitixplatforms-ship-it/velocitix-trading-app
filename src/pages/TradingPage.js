@@ -99,11 +99,11 @@ const TradingPage = () => {
         </div>
         <div className="flex-1 overflow-y-auto">
           {filteredSymbols.map((symbol) => (
-            <button
+            <div
               key={symbol.symbol}
               onClick={() => setSelectedSymbol(symbol.symbol)}
               data-testid={`watchlist-symbol-${symbol.symbol}`}
-              className={`w-full px-4 py-3.5 flex items-center justify-between border-b border-white/5 hover:bg-blue-500/10 transition-all duration-150 ${
+              className={`w-full px-4 py-3.5 flex items-center justify-between border-b border-white/5 hover:bg-blue-500/10 transition-all duration-150 cursor-pointer ${
                 selectedSymbol === symbol.symbol ? 'bg-blue-500/20 border-l-2 border-l-blue-500' : ''
               }`}
             >
@@ -126,7 +126,7 @@ const TradingPage = () => {
                   {symbol.change_percent >= 0 ? '+' : ''}{symbol.change_percent.toFixed(2)}%
                 </div>
               </div>
-            </button>
+            </div>
           ))}
         </div>
       </div>
