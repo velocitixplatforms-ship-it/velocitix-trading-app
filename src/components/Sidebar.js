@@ -25,7 +25,7 @@ const Sidebar = () => {
   const location = useLocation();
 
   return (
-    <aside className="w-64 bg-[#131722] border-r border-white/5 flex flex-col relative z-[100]">
+    <aside className="w-64 bg-[#131722] border-r border-white/5 flex flex-col fixed left-0 top-0 h-screen z-[9999]">
       {/* Logo */}
       <div className="p-6 border-b border-white/5">
         <Link to="/dashboard" className="flex items-center space-x-3 group">
