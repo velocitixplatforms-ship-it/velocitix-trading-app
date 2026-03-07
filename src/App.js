@@ -4,8 +4,10 @@ import { AuthProvider } from '@/contexts/AuthContext';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import { MarketDataProvider } from '@/contexts/MarketDataContext';
 import { Toaster } from '@/components/ui/sonner';
+
 import ProtectedRoute from '@/components/ProtectedRoute';
 import Layout from '@/components/Layout';
+
 import LoginPage from '@/pages/LoginPage';
 import DashboardPage from '@/pages/DashboardPage';
 import TradingPage from '@/pages/TradingPage';
@@ -15,6 +17,7 @@ import FundsPage from '@/pages/FundsPage';
 import AnalyticsPage from '@/pages/AnalyticsPage';
 import ProfilePage from '@/pages/ProfilePage';
 import FullscreenChartPage from '@/pages/FullscreenChartPage';
+
 import '@/App.css';
 
 function App() {
@@ -23,11 +26,13 @@ function App() {
       <AuthProvider>
         <MarketDataProvider>
           <BrowserRouter>
+
             <Routes>
-              {/* Public Routes */}
+
+              {/* Public Route */}
               <Route path="/login" element={<LoginPage />} />
-              
-              {/* Fullscreen Chart Route (Protected) */}
+
+              {/* Fullscreen Chart */}
               <Route
                 path="/chart"
                 element={
@@ -36,82 +41,33 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-              
-              {/* Protected Routes */}
+
+              {/* Redirect root */}
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
+
+              {/* Protected Dashboard Layout */}
               <Route
-                path="/dashboard"
                 element={
                   <ProtectedRoute>
-                    <Layout>
-                      <DashboardPage />
-                    </Layout>
+                    <Layout />
                   </ProtectedRoute>
                 }
-              />
-              <Route
-                path="/trade"
-                element={
-                  <ProtectedRoute>
-                    <Layout>
-                      <TradingPage />
-                    </Layout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/positions"
-                element={
-                  <ProtectedRoute>
-                    <Layout>
-                      <PositionsPage />
-                    </Layout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/orders"
-                element={
-                  <ProtectedRoute>
-                    <Layout>
-                      <OrdersPage />
-                    </Layout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/funds"
-                element={
-                  <ProtectedRoute>
-                    <Layout>
-                      <FundsPage />
-                    </Layout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/analytics"
-                element={
-                  <ProtectedRoute>
-                    <Layout>
-                      <AnalyticsPage />
-                    </Layout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/profile"
-                element={
-                  <ProtectedRoute>
-                    <Layout>
-                      <ProfilePage />
-                    </Layout>
-                  </ProtectedRoute>
-                }
-              />
+              >
+                <Route path="/dashboard" element={<DashboardPage />} />
+                <Route path="/trade" element={<TradingPage />} />
+                <Route path="/positions" element={<PositionsPage />} />
+                <Route path="/orders" element={<OrdersPage />} />
+                <Route path="/funds" element={<FundsPage />} />
+                <Route path="/analytics" element={<AnalyticsPage />} />
+                <Route path="/profile" element={<ProfilePage />} />
+              </Route>
+
             </Routes>
+
           </BrowserRouter>
+
           <Toaster position="top-right" theme="dark" richColors />
+
         </MarketDataProvider>
       </AuthProvider>
     </ThemeProvider>
