@@ -32,14 +32,9 @@ function App() {
               <Route path="/login" element={<LoginPage />} />
 
               {/* Fullscreen Chart */}
-              <Route
-                path="/chart"
-                element={
-                  <ProtectedRoute>
-                    <FullscreenChartPage />
-                  </ProtectedRoute>
-                }
-              />
+              <Route element={<ProtectedRoute />}>
+  <Route path="/chart" element={<FullscreenChartPage />} />
+</Route>
 
               {/* Protected Layout */}
               <Route element={<ProtectedRoute />}>
