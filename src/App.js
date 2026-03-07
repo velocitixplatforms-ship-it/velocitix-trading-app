@@ -26,10 +26,9 @@ function App() {
       <AuthProvider>
         <MarketDataProvider>
           <BrowserRouter>
-
             <Routes>
 
-              {/* Public Route */}
+              {/* Public */}
               <Route path="/login" element={<LoginPage />} />
 
               {/* Fullscreen Chart */}
@@ -42,32 +41,26 @@ function App() {
                 }
               />
 
-              {/* Redirect root */}
-              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+              {/* Protected Layout */}
+              <Route element={<ProtectedRoute />}>
+                <Route element={<Layout />}>
 
-              {/* Protected Dashboard Layout */}
-              <Route
-                element={
-                  <ProtectedRoute>
-                    <Layout />
-                  </ProtectedRoute>
-                }
-              >
-                <Route path="/dashboard" element={<DashboardPage />} />
-                <Route path="/trade" element={<TradingPage />} />
-                <Route path="/positions" element={<PositionsPage />} />
-                <Route path="/orders" element={<OrdersPage />} />
-                <Route path="/funds" element={<FundsPage />} />
-                <Route path="/analytics" element={<AnalyticsPage />} />
-                <Route path="/profile" element={<ProfilePage />} />
+                  <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                  <Route path="/dashboard" element={<DashboardPage />} />
+                  <Route path="/trade" element={<TradingPage />} />
+                  <Route path="/positions" element={<PositionsPage />} />
+                  <Route path="/orders" element={<OrdersPage />} />
+                  <Route path="/funds" element={<FundsPage />} />
+                  <Route path="/analytics" element={<AnalyticsPage />} />
+                  <Route path="/profile" element={<ProfilePage />} />
+
+                </Route>
               </Route>
 
             </Routes>
-
           </BrowserRouter>
 
           <Toaster position="top-right" theme="dark" richColors />
-
         </MarketDataProvider>
       </AuthProvider>
     </ThemeProvider>
