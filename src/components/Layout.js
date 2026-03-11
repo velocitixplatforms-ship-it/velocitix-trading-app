@@ -11,11 +11,11 @@ const Layout = () => {
       <Sidebar />
 
       {/* Main content */}
-      <div className="flex-1 flex flex-col ml-64">
+      <div className="flex-1 flex flex-col">
 
         <Navbar />
 
-        <main className="flex-1 overflow-y-auto">
+        <main className="flex-1 overflow-hidden">
           <Outlet />
         </main>
 
