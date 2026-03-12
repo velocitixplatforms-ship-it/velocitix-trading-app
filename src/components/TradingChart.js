@@ -280,12 +280,6 @@ const TradingChart = ({ symbol, currentPrice }) => {
       chartRef.current = chart;
       candlestickSeriesRef.current = candlestickSeries;
 
-      setTimeout(() => {
-  const canvas = chartContainerRef.current?.querySelector("canvas");
-  if (canvas) {
-    canvas.style.pointerEvents = "none";
-  }
-}, 0);
       const handleResize = () => {
         if (chartContainerRef.current && chartRef.current) {
           chartRef.current.applyOptions({
