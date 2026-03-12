@@ -26,15 +26,14 @@ const Sidebar = () => {
   const navigate = useNavigate();
 
   return (
-    <aside className="w-64 bg-[#131722] border-r border-white/5 flex flex-col fixed left-0 top-0 h-screen z-[9999]">
+    <aside className="w-64 bg-[#131722] border-r border-white/5 flex flex-col fixed left-0 top-0 h-screen">
 
-      {/* Logo */}
       <div className="p-6 border-b border-white/5">
         <button
           onClick={() => navigate('/dashboard')}
           className="flex items-center space-x-3 group"
         >
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/30">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
             <TrendingUp className="w-6 h-6 text-white" />
           </div>
 
@@ -49,7 +48,6 @@ const Sidebar = () => {
         </button>
       </div>
 
-      {/* Navigation */}
       <nav className="flex-1 p-4 space-y-1">
 
         {navItems.map((item) => {
@@ -75,7 +73,6 @@ const Sidebar = () => {
 
       </nav>
 
-      {/* Footer */}
       <div className="p-4 border-t border-white/5">
         <div className="bg-[#0b0f14] border border-white/10 rounded-xl p-3">
           <div className="flex items-center space-x-2 mb-2">
