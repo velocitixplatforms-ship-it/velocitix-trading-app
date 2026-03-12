@@ -134,7 +134,7 @@ const TradingPage = () => {
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
         {/* Chart Section */}
-        <div className="flex-1 bg-[#0A0A0A] p-4">
+        <div className="flex-1 bg-[#0A0A0A] p-4 pointer-events-auto">
           <div className="h-full bg-[#121212] border border-white/5 rounded-xl overflow-hidden">
             <div className="p-4 border-b border-white/5 flex items-center justify-between">
               <div>
@@ -154,7 +154,7 @@ const TradingPage = () => {
                 )}
               </div>
             </div>
-            <div className="h-[calc(100%-100px)] bg-[#131722] rounded-lg border border-[#1f2937] p-3">
+            <div className="h-[calc(100%-100px)] bg-[#131722] rounded-lg border border-[#1f2937] p-3 pointer-events-auto">
               <TradingChart 
                 symbol={selectedSymbol} 
                 currentPrice={selectedSymbolData?.price || 0}
