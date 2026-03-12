@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   TrendingUp, 
@@ -23,14 +23,13 @@ const navItems = [
 
 const Sidebar = () => {
   const location = useLocation();
-  const navigate = useNavigate();
 
   return (
     <aside className="w-64 bg-[#131722] border-r border-white/5 flex flex-col fixed left-0 top-0 h-screen">
 
       <div className="p-6 border-b border-white/5">
-        <button
-          onClick={() => navigate('/dashboard')}
+        <Link
+          to="/dashboard"
           className="flex items-center space-x-3 group"
         >
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
@@ -45,7 +44,7 @@ const Sidebar = () => {
               Prop Trading
             </p>
           </div>
-        </button>
+        </Link>
       </div>
 
       <nav className="flex-1 p-4 space-y-1">
@@ -56,9 +55,9 @@ const Sidebar = () => {
           const isActive = location.pathname === item.path;
 
           return (
-            <button
+            <Link
               key={item.path}
-              onClick={() => navigate(item.path)}
+              to={item.path}
               className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-150 ${
                 isActive
                   ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/40'
@@ -67,7 +66,7 @@ const Sidebar = () => {
             >
               <Icon className="w-5 h-5" />
               <span className="font-medium text-sm">{item.label}</span>
-            </button>
+            </Link>
           );
         })}
 
