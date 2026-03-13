@@ -30,10 +30,10 @@ function App() {
 
             <Routes>
 
-              {/* Public */}
+              {/* Login */}
               <Route path="/login" element={<LoginPage />} />
 
-              {/* Protected */}
+              {/* Protected Layout */}
               <Route
                 path="/"
                 element={
@@ -43,7 +43,7 @@ function App() {
                 }
               >
 
-                <Route index element={<Navigate to="/dashboard" />} />
+                <Route index element={<Navigate to="dashboard" />} />
 
                 <Route path="dashboard" element={<DashboardPage />} />
                 <Route path="trade" element={<TradingPage />} />
