@@ -26,6 +26,7 @@ function App() {
     <ThemeProvider>
       <AuthProvider>
         <MarketDataProvider>
+
           <BrowserRouter>
 
             <Routes>
@@ -33,27 +34,15 @@ function App() {
               {/* Login */}
               <Route path="/login" element={<LoginPage />} />
 
-              {/* Protected Layout */}
+              {/* Main App */}
               <Route
-                path="/"
+                path="/*"
                 element={
                   <ProtectedRoute>
                     <Layout />
                   </ProtectedRoute>
                 }
-              >
-
-                <Route index element={<Navigate to="dashboard" />} />
-
-                <Route path="dashboard" element={<DashboardPage />} />
-                <Route path="trade" element={<TradingPage />} />
-                <Route path="positions" element={<PositionsPage />} />
-                <Route path="orders" element={<OrdersPage />} />
-                <Route path="funds" element={<FundsPage />} />
-                <Route path="analytics" element={<AnalyticsPage />} />
-                <Route path="profile" element={<ProfilePage />} />
-
-              </Route>
+              />
 
               {/* Fullscreen Chart */}
               <Route
