@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+
 import { AuthProvider } from '@/contexts/AuthContext';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import { MarketDataProvider } from '@/contexts/MarketDataContext';
@@ -26,36 +27,50 @@ function App() {
       <AuthProvider>
         <MarketDataProvider>
           <BrowserRouter>
+
             <Routes>
 
               {/* Public */}
               <Route path="/login" element={<LoginPage />} />
 
-              {/* Fullscreen Chart */}
-              <Route element={<ProtectedRoute />}>
-  <Route path="/chart" element={<FullscreenChartPage />} />
-</Route>
+              {/* Protected */}
+              <Route
+                path="/"
+                element={
+                  <ProtectedRoute>
+                    <Layout />
+                  </ProtectedRoute>
+                }
+              >
 
-              {/* Protected Layout */}
-              <Route element={<ProtectedRoute />}>
-                <Route element={<Layout />}>
+                <Route index element={<Navigate to="/dashboard" />} />
 
-                  <Route path="/" element={<Navigate to="/dashboard" replace />} />
-                  <Route path="/dashboard" element={<DashboardPage />} />
-                  <Route path="/trade" element={<TradingPage />} />
-                  <Route path="/positions" element={<PositionsPage />} />
-                  <Route path="/orders" element={<OrdersPage />} />
-                  <Route path="/funds" element={<FundsPage />} />
-                  <Route path="/analytics" element={<AnalyticsPage />} />
-                  <Route path="/profile" element={<ProfilePage />} />
+                <Route path="dashboard" element={<DashboardPage />} />
+                <Route path="trade" element={<TradingPage />} />
+                <Route path="positions" element={<PositionsPage />} />
+                <Route path="orders" element={<OrdersPage />} />
+                <Route path="funds" element={<FundsPage />} />
+                <Route path="analytics" element={<AnalyticsPage />} />
+                <Route path="profile" element={<ProfilePage />} />
 
-                </Route>
               </Route>
 
+              {/* Fullscreen Chart */}
+              <Route
+                path="/chart"
+                element={
+                  <ProtectedRoute>
+                    <FullscreenChartPage />
+                  </ProtectedRoute>
+                }
+              />
+
             </Routes>
+
           </BrowserRouter>
 
           <Toaster position="top-right" theme="dark" richColors />
+
         </MarketDataProvider>
       </AuthProvider>
     </ThemeProvider>
