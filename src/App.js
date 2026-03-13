@@ -26,25 +26,27 @@ function App() {
     <ThemeProvider>
       <AuthProvider>
         <MarketDataProvider>
-
           <BrowserRouter>
 
             <Routes>
 
-              {/* Login */}
               <Route path="/login" element={<LoginPage />} />
 
-              {/* Main App */}
-              <Route
-                path="/*"
-                element={
-                  <ProtectedRoute>
-                    <Layout />
-                  </ProtectedRoute>
-                }
-              />
+              <Route element={<ProtectedRoute />}>
+                <Route element={<Layout />}>
 
-              {/* Fullscreen Chart */}
+                  <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                  <Route path="/dashboard" element={<DashboardPage />} />
+                  <Route path="/trade" element={<TradingPage />} />
+                  <Route path="/positions" element={<PositionsPage />} />
+                  <Route path="/orders" element={<OrdersPage />} />
+                  <Route path="/funds" element={<FundsPage />} />
+                  <Route path="/analytics" element={<AnalyticsPage />} />
+                  <Route path="/profile" element={<ProfilePage />} />
+
+                </Route>
+              </Route>
+
               <Route
                 path="/chart"
                 element={
