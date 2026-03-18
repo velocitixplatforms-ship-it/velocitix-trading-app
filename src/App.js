@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 
 import { AuthProvider } from '@/contexts/AuthContext';
 import { ThemeProvider } from '@/contexts/ThemeContext';
@@ -26,7 +26,7 @@ function App() {
     <ThemeProvider>
       <AuthProvider>
         <MarketDataProvider>
-          <BrowserRouter>
+          <HashRouter>
 
             <Routes>
 
@@ -35,14 +35,14 @@ function App() {
               <Route element={<ProtectedRoute />}>
                 <Route element={<Layout />}>
 
-                  <Route path="/" element={<Navigate to="/dashboard" replace />} />
-                  <Route path="/dashboard" element={<DashboardPage />} />
-                  <Route path="/trade" element={<TradingPage />} />
-                  <Route path="/positions" element={<PositionsPage />} />
-                  <Route path="/orders" element={<OrdersPage />} />
-                  <Route path="/funds" element={<FundsPage />} />
-                  <Route path="/analytics" element={<AnalyticsPage />} />
-                  <Route path="/profile" element={<ProfilePage />} />
+                  <Route index element={<Navigate to="dashboard" replace />} />
+                  <Route path="dashboard" element={<DashboardPage />} />
+                  <Route path="trade" element={<TradingPage />} />
+                  <Route path="positions" element={<PositionsPage />} />
+                  <Route path="orders" element={<OrdersPage />} />
+                  <Route path="funds" element={<FundsPage />} />
+                  <Route path="analytics" element={<AnalyticsPage />} />
+                  <Route path="profile" element={<ProfilePage />} />
 
                 </Route>
               </Route>
@@ -58,7 +58,7 @@ function App() {
 
             </Routes>
 
-          </BrowserRouter>
+          </HashRouter>
 
           <Toaster position="top-right" theme="dark" richColors />
 
