@@ -154,7 +154,7 @@ const TradingPage = () => {
                 )}
               </div>
             </div>
-            <div className="h-[calc(100%-100px)] bg-[#131722] rounded-lg border border-[#1f2937] p-3 pointer-events-none">
+            <div className="h-[calc(100%-100px)] bg-[#131722] rounded-lg border border-[#1f2937] p-3">
               <TradingChart 
                 symbol={selectedSymbol} 
                 currentPrice={selectedSymbolData?.price || 0}
