@@ -1,70 +1,24 @@
 import React from 'react';
-import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter, Routes, Route, Link } from 'react-router-dom';
 
-import { AuthProvider } from '@/contexts/AuthContext';
-import { ThemeProvider } from '@/contexts/ThemeContext';
-import { MarketDataProvider } from '@/contexts/MarketDataContext';
-import { Toaster } from '@/components/ui/sonner';
-
-import ProtectedRoute from '@/components/ProtectedRoute';
-import Layout from '@/components/Layout';
-
-import LoginPage from '@/pages/LoginPage';
-import DashboardPage from '@/pages/DashboardPage';
-import TradingPage from '@/pages/TradingPage';
-import PositionsPage from '@/pages/PositionsPage';
-import OrdersPage from '@/pages/OrdersPage';
-import FundsPage from '@/pages/FundsPage';
-import AnalyticsPage from '@/pages/AnalyticsPage';
-import ProfilePage from '@/pages/ProfilePage';
-import FullscreenChartPage from '@/pages/FullscreenChartPage';
-
-import '@/App.css';
+const Page = ({ name }) => (
+  <div style={{ padding: 40 }}>
+    <h1>{name}</h1>
+    <Link to="/dashboard">Dashboard</Link> |{" "}
+    <Link to="/trade">Trade</Link> |{" "}
+    <Link to="/orders">Orders</Link>
+  </div>
+);
 
 function App() {
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <MarketDataProvider>
-          <HashRouter>
-
-            <Routes>
-
-              <Route path="/login" element={<LoginPage />} />
-
-              <Route element={<ProtectedRoute />}>
-                <Route element={<Layout />}>
-
-                  <Route index element={<Navigate to="dashboard" replace />} />
-                  <Route path="dashboard" element={<DashboardPage />} />
-                  <Route path="trade" element={<TradingPage />} />
-                  <Route path="positions" element={<PositionsPage />} />
-                  <Route path="orders" element={<OrdersPage />} />
-                  <Route path="funds" element={<FundsPage />} />
-                  <Route path="analytics" element={<AnalyticsPage />} />
-                  <Route path="profile" element={<ProfilePage />} />
-
-                </Route>
-              </Route>
-
-              <Route
-                path="/chart"
-                element={
-                  <ProtectedRoute>
-                    <FullscreenChartPage />
-                  </ProtectedRoute>
-                }
-              />
-
-            </Routes>
-
-          </HashRouter>
-
-          <Toaster position="top-right" theme="dark" richColors />
-
-        </MarketDataProvider>
-      </AuthProvider>
-    </ThemeProvider>
+    <HashRouter>
+      <Routes>
+        <Route path="/dashboard" element={<Page name="Dashboard" />} />
+        <Route path="/trade" element={<Page name="Trade" />} />
+        <Route path="/orders" element={<Page name="Orders" />} />
+      </Routes>
+    </HashRouter>
   );
 }
 
