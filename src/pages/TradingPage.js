@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useMarketData } from '@/contexts/MarketDataContext';
-import TradingChart from '@/components/TradingChart';
 import axios from 'axios';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -101,7 +100,14 @@ const TradingPage = () => {
           {filteredSymbols.map((symbol) => (
             <div
               key={symbol.symbol}
-              onClick={() => setSelectedSymbol(symbol.symbol)}
+              onClick={() => {
+                setSelectedSymbol(symbol.symbol);
+  const tvSymbol = symbol.symbol
+    .replace(/\s+/g, '')
+    .replace('&', ''); // safety cleanup
+
+  window.open(`https://www.tradingview.com/chart/?symbol=NSE:${tvSymbol}`, '_blank', 'noopener,noreferrer');
+}}
               data-testid={`watchlist-symbol-${symbol.symbol}`}
               className={`w-full px-4 py-3.5 flex items-center justify-between border-b border-white/5 hover:bg-blue-500/10 transition-all duration-150 cursor-pointer ${
                 selectedSymbol === symbol.symbol ? 'bg-blue-500/20 border-l-2 border-l-blue-500' : ''
@@ -154,12 +160,9 @@ const TradingPage = () => {
                 )}
               </div>
             </div>
-            <div className="h-[calc(100%-100px)] bg-[#131722] rounded-lg border border-[#1f2937] p-3">
-              <TradingChart 
-                symbol={selectedSymbol} 
-                currentPrice={selectedSymbolData?.price || 0}
-              />
-            </div>
+            <div className="h-[calc(100%-100px)] flex items-center justify-center text-gray-500 text-sm">
+  Click a symbol to view chart on TradingView
+</div>
           </div>
         </div>
       </div>
