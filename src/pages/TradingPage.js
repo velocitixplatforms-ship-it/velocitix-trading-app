@@ -4,7 +4,7 @@ import { useMarketData } from '@/contexts/MarketDataContext';
 import axios from 'axios';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Search, TrendingUp, TrendingDown, Activity } from 'lucide-react';
+import { Search, TrendingUp, TrendingDown } from 'lucide-react';
 import { toast } from 'sonner';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -159,30 +159,34 @@ const TradingPage = () => {
         </Button>
       </div>
 
-      {/* 🔥 PREMIUM MODAL */}
+      {/* 🔥 PRO TRADING MODAL */}
       {orderModal && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50">
 
-          <div className="bg-[#0f172a] w-[420px] rounded-2xl border border-white/10 shadow-2xl overflow-hidden">
+          <div className="bg-[#0b1220] w-[440px] rounded-2xl border border-white/10 shadow-2xl overflow-hidden">
 
-            <div className={`px-5 py-3 text-white font-semibold text-sm ${
+            {/* Header */}
+            <div className={`px-5 py-3 text-white font-semibold text-sm flex justify-between ${
               orderModal.side === 'buy'
                 ? 'bg-gradient-to-r from-green-600 to-green-500'
                 : 'bg-gradient-to-r from-red-600 to-red-500'
             }`}>
-              {orderModal.symbol}
+              <span>{orderModal.symbol}</span>
+              <span className="text-xs opacity-80">
+                {selectedSymbolData ? formatCurrency(selectedSymbolData.price) : '--'}
+              </span>
             </div>
 
             <div className="p-5 space-y-5">
 
+              {/* Tabs */}
               <div className="flex bg-[#020617] rounded-lg p-1">
-                <button className="flex-1 py-1.5 text-xs rounded-md bg-blue-600 text-white">
-                  Quick
-                </button>
+                <button className="flex-1 py-1.5 text-xs rounded-md bg-blue-600 text-white">Quick</button>
                 <button className="flex-1 py-1.5 text-xs text-gray-400">Regular</button>
                 <button className="flex-1 py-1.5 text-xs text-gray-400">Iceberg</button>
               </div>
 
+              {/* Quantity */}
               <div>
                 <div className="text-xs text-gray-400 mb-1">Quantity</div>
                 <input
@@ -193,13 +197,12 @@ const TradingPage = () => {
                 />
               </div>
 
+              {/* Order Type */}
               <div className="flex gap-2">
                 <button
                   onClick={() => setOrderType('market')}
                   className={`flex-1 py-2 rounded-lg ${
-                    orderType === 'market'
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-[#020617] text-gray-400'
+                    orderType === 'market' ? 'bg-blue-600 text-white' : 'bg-[#020617] text-gray-400'
                   }`}
                 >
                   Market
@@ -208,15 +211,14 @@ const TradingPage = () => {
                 <button
                   onClick={() => setOrderType('limit')}
                   className={`flex-1 py-2 rounded-lg ${
-                    orderType === 'limit'
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-[#020617] text-gray-400'
+                    orderType === 'limit' ? 'bg-blue-600 text-white' : 'bg-[#020617] text-gray-400'
                   }`}
                 >
                   Limit
                 </button>
               </div>
 
+              {/* Price */}
               {orderType === 'limit' && (
                 <input
                   type="number"
@@ -227,7 +229,22 @@ const TradingPage = () => {
                 />
               )}
 
-              <div className="flex gap-3 pt-2">
+              {/* Order Value */}
+              <div className="bg-[#020617] p-3 rounded-lg border border-white/5 text-sm flex justify-between">
+                <span className="text-gray-400">Order Value</span>
+                <span className="text-white">
+                  {selectedSymbolData
+                    ? formatCurrency(
+                        (orderType === 'limit' && limitPrice
+                          ? parseFloat(limitPrice)
+                          : selectedSymbolData.price) * quantity
+                      )
+                    : '--'}
+                </span>
+              </div>
+
+              {/* Actions */}
+              <div className="flex gap-3">
                 <button
                   onClick={() => setOrderModal(null)}
                   className="flex-1 py-2 bg-gray-700 text-white rounded-lg"
@@ -241,9 +258,7 @@ const TradingPage = () => {
                     setOrderModal(null);
                   }}
                   className={`flex-1 py-2 text-white rounded-lg ${
-                    orderModal.side === 'buy'
-                      ? 'bg-green-600'
-                      : 'bg-red-600'
+                    orderModal.side === 'buy' ? 'bg-green-600' : 'bg-red-600'
                   }`}
                 >
                   {orderModal.side.toUpperCase()}
