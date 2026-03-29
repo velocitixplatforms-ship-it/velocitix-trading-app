@@ -517,7 +517,7 @@ const TradingChart = ({ symbol, currentPrice }) => {
   return (
     <div className="w-full h-full flex flex-col" style={{ background: '#131722' }}>
       {/* Toolbar */}
-      <div className="flex items-center justify-between px-4 py-2 border-b border-white/5">
+      <div className="flex items-center justify-between px-4 py-2 border-b border-white/5 pointer-events-auto">
         {/* Timeframe Selector */}
         <div className="flex items-center space-x-1">
           {TIMEFRAMES.map((tf) => (
@@ -590,7 +590,7 @@ const TradingChart = ({ symbol, currentPrice }) => {
       <div 
         ref={chartContainerRef} 
         className="flex-1 w-full"
-        style={{ minHeight: 0 }}
+        style={{ minHeight: 0, pointerEvents: 'none' }}
       />
       
       {/* RSI Chart */}
