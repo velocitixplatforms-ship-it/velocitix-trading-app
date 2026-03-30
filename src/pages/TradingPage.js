@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useMarketData } from '@/contexts/MarketDataContext';
 import axios from 'axios';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Search, TrendingUp, TrendingDown } from 'lucide-react';
 import { toast } from 'sonner';
@@ -14,13 +13,12 @@ const TradingPage = () => {
   const { getAuthHeader } = useAuth();
   const { symbols = [], selectedSymbol = 'NIFTY 50', setSelectedSymbol } = useMarketData();
 
+  const [searchQuery, setSearchQuery] = useState('');
+  const [orderModal, setOrderModal] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [orderType, setOrderType] = useState('market');
   const [limitPrice, setLimitPrice] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
   const [placingOrder, setPlacingOrder] = useState(false);
-
-  const [orderModal, setOrderModal] = useState(null);
 
   const selectedSymbolData = symbols.find(s => s.symbol === selectedSymbol);
 
@@ -29,54 +27,35 @@ const TradingPage = () => {
     symbol.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-const placeOrder = async (side) => {
-  console.log("Placing order:", {
-    symbol: selectedSymbol,
-    quantity,
-    orderType,
-    limitPrice
-  });
+  const placeOrder = async (side) => {
+    setPlacingOrder(true);
 
-  setPlacingOrder(true);
+    try {
+      const orderData = {
+        symbol: selectedSymbol,
+        side,
+        quantity: parseInt(quantity),
+        order_type: orderType,
+        price: orderType === 'limit' ? parseFloat(limitPrice) : undefined
+      };
 
-  try {
-    const orderData = {
-      symbol: selectedSymbol,
-      side,
-      quantity: parseInt(quantity),
-      order_type: orderType,
-      price: orderType === 'limit' ? parseFloat(limitPrice) : undefined
-    };
+      await axios.post(`${API}/orders`, orderData, {
+        headers: getAuthHeader()
+      });
 
-    console.log("API URL:", `${API}/orders`);
-    console.log("Payload:", orderData);
+      toast.success(`${side.toUpperCase()} order executed`);
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Order failed');
+    } finally {
+      setPlacingOrder(false);
+    }
+  };
 
-    const res = await axios.post(
-      `${API}/orders`,
-      orderData,
-      { headers: getAuthHeader() }
-    );
-
-    console.log("Response:", res.data);
-
-    toast.success(`${side.toUpperCase()} order placed successfully!`);
-  } catch (error) {
-    console.log("ERROR:", error);
-    console.log("ERROR RESPONSE:", error.response);
-
-    toast.error(
-      error.response?.data?.detail || "Order failed"
-    );
-  } finally {
-    setPlacingOrder(false);
-  }
-};
-
-  const formatCurrency = (value) => {
+  const formatCurrency = (val) => {
     return new Intl.NumberFormat('en-IN', {
       style: 'currency',
       currency: 'INR'
-    }).format(value);
+    }).format(val || 0);
   };
 
   const openTradingView = (symbol) => {
@@ -87,143 +66,153 @@ const placeOrder = async (side) => {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row h-full">
+    <div className="flex h-full bg-[#0B0F14] text-white">
 
-      {/* Sidebar */}
-      <div className="w-full lg:w-80 bg-[#131722] border-r border-white/5 flex flex-col">
+      {/* WATCHLIST */}
+      <div className="w-80 border-r border-white/5 flex flex-col">
+
         <div className="p-4 border-b border-white/5">
-          <h2 className="text-white mb-3">Watchlist</h2>
-          <Input
-            placeholder="Search"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
+          <div className="text-sm font-semibold mb-3">Watchlist</div>
+
+          <div className="relative">
+            <Search className="absolute left-3 top-2.5 w-4 h-4 text-gray-500" />
+            <Input
+              placeholder="Search instruments"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-9 bg-[#121722] border-white/10 text-white"
+            />
+          </div>
         </div>
 
         <div className="flex-1 overflow-y-auto">
-          {filteredSymbols.map((symbol) => (
+          {filteredSymbols.map((s) => (
             <div
-              key={symbol.symbol}
-              className={`group px-4 py-3 flex justify-between items-center hover:bg-gray-800 cursor-pointer ${
-                selectedSymbol === symbol.symbol ? 'bg-gray-700' : ''
+              key={s.symbol}
+              onClick={() => {
+                setSelectedSymbol(s.symbol);
+                openTradingView(s.symbol);
+              }}
+              className={`px-4 py-3 border-b border-white/5 cursor-pointer transition ${
+                selectedSymbol === s.symbol
+                  ? 'bg-[#1a2233]'
+                  : 'hover:bg-white/[0.03]'
               }`}
             >
-              <div
-                onClick={() => {
-                  setSelectedSymbol(symbol.symbol);
-                  openTradingView(symbol.symbol);
-                }}
-                className="flex-1"
-              >
-                <div className="text-white text-sm">{symbol.symbol}</div>
-                <div className="text-gray-400 text-xs">{symbol.name}</div>
-              </div>
+              <div className="flex justify-between items-center">
 
-              <div className="text-right mr-3">
-                <div className="text-white text-sm">
-                  {formatCurrency(symbol.price)}
+                <div>
+                  <div className="text-sm font-medium">{s.symbol}</div>
+                  <div className="text-xs text-gray-400">{s.name}</div>
                 </div>
-                <div className={symbol.change >= 0 ? 'text-green-500 text-xs' : 'text-red-500 text-xs'}>
-                  {symbol.change_percent.toFixed(2)}%
+
+                <div className="text-right">
+                  <div className="text-sm">{formatCurrency(s.price)}</div>
+                  <div className={`text-xs flex items-center justify-end ${
+                    s.change >= 0 ? 'text-green-500' : 'text-red-500'
+                  }`}>
+                    {s.change >= 0 ? <TrendingUp size={12}/> : <TrendingDown size={12}/>}
+                    {s.change_percent.toFixed(2)}%
+                  </div>
                 </div>
+
               </div>
 
-              <div className="hidden group-hover:flex gap-2">
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedSymbol(symbol.symbol);
-                    setOrderModal({ side: 'buy', symbol: symbol.symbol });
-                  }}
-                  className="bg-green-600 text-white px-2 py-1 text-xs rounded"
-                >
-                  Buy
-                </button>
-
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedSymbol(symbol.symbol);
-                    setOrderModal({ side: 'sell', symbol: symbol.symbol });
-                  }}
-                  className="bg-red-600 text-white px-2 py-1 text-xs rounded"
-                >
-                  Sell
-                </button>
+              {/* Hover actions */}
+              <div className="hidden group-hover:flex gap-2 mt-2">
               </div>
+
             </div>
           ))}
         </div>
+
       </div>
 
-      {/* Center */}
-      <div className="flex-1 flex items-center justify-center bg-black text-white">
-        <div className="text-center">
-          <h2 className="text-xl mb-3">{selectedSymbol}</h2>
-          <button
-            onClick={() => openTradingView(selectedSymbol)}
-            className="px-4 py-2 bg-blue-600 rounded-lg"
-          >
-            Open Chart
-          </button>
+      {/* CENTER PANEL */}
+      <div className="flex-1 flex flex-col">
+
+        {/* HEADER */}
+        <div className="p-4 border-b border-white/5 flex justify-between items-center">
+
+          <div>
+            <div className="text-lg font-semibold">{selectedSymbol}</div>
+            <div className="text-sm text-gray-400">
+              {selectedSymbolData ? formatCurrency(selectedSymbolData.price) : '--'}
+            </div>
+          </div>
+
+          <div className="flex gap-2">
+            <button
+              onClick={() => setOrderModal({ side: 'buy' })}
+              className="px-4 py-2 bg-green-600 rounded-lg text-sm font-medium"
+            >
+              Buy
+            </button>
+
+            <button
+              onClick={() => setOrderModal({ side: 'sell' })}
+              className="px-4 py-2 bg-red-600 rounded-lg text-sm font-medium"
+            >
+              Sell
+            </button>
+          </div>
+
         </div>
-      </div>
 
-      {/* Right Panel */}
-      <div className="w-full lg:w-80 bg-[#131722] p-4 space-y-3">
-        <Button onClick={() => setOrderModal({ side: 'buy', symbol: selectedSymbol })}>
-          BUY
-        </Button>
+        {/* EMPTY STATE (NO EMBEDDED CHART) */}
+        <div className="flex-1 flex items-center justify-center text-center">
 
-        <Button onClick={() => setOrderModal({ side: 'sell', symbol: selectedSymbol })}>
-          SELL
-        </Button>
-      </div>
-
-      {/* 🔥 PRO TRADING MODAL */}
-      {orderModal && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50">
-
-          <div className="bg-[#0b1220] w-[440px] rounded-2xl border border-white/10 shadow-2xl overflow-hidden">
-
-            {/* Header */}
-            <div className={`px-5 py-3 text-white font-semibold text-sm flex justify-between ${
-              orderModal.side === 'buy'
-                ? 'bg-gradient-to-r from-green-600 to-green-500'
-                : 'bg-gradient-to-r from-red-600 to-red-500'
-            }`}>
-              <span>{orderModal.symbol}</span>
-              <span className="text-xs opacity-80">
-                {selectedSymbolData ? formatCurrency(selectedSymbolData.price) : '--'}
-              </span>
+          <div>
+            <div className="text-lg mb-2">Advanced Chart</div>
+            <div className="text-gray-400 text-sm mb-4">
+              Open full TradingView chart for detailed analysis
             </div>
 
-            <div className="p-5 space-y-5">
+            <button
+              onClick={() => openTradingView(selectedSymbol)}
+              className="px-5 py-2 bg-blue-600 rounded-lg text-sm"
+            >
+              Open Chart
+            </button>
+          </div>
 
-              {/* Tabs */}
-              <div className="flex bg-[#020617] rounded-lg p-1">
-                <button className="flex-1 py-1.5 text-xs rounded-md bg-blue-600 text-white">Quick</button>
-                <button className="flex-1 py-1.5 text-xs text-gray-400">Regular</button>
-                <button className="flex-1 py-1.5 text-xs text-gray-400">Iceberg</button>
-              </div>
+        </div>
 
-              {/* Quantity */}
+      </div>
+
+      {/* ORDER MODAL */}
+      {orderModal && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+
+          <div className="bg-[#121722] w-[420px] rounded-xl border border-white/10">
+
+            <div className={`px-4 py-3 text-sm font-semibold ${
+              orderModal.side === 'buy'
+                ? 'bg-green-600'
+                : 'bg-red-600'
+            }`}>
+              {orderModal.side.toUpperCase()} {selectedSymbol}
+            </div>
+
+            <div className="p-4 space-y-4">
+
               <div>
                 <div className="text-xs text-gray-400 mb-1">Quantity</div>
                 <input
                   type="number"
                   value={quantity}
                   onChange={(e) => setQuantity(e.target.value)}
-                  className="w-full bg-[#020617] border border-white/10 text-white px-3 py-2 rounded-lg"
+                  className="w-full bg-[#0B0F14] border border-white/10 px-3 py-2 rounded"
                 />
               </div>
 
-              {/* Order Type */}
               <div className="flex gap-2">
                 <button
                   onClick={() => setOrderType('market')}
-                  className={`flex-1 py-2 rounded-lg ${
-                    orderType === 'market' ? 'bg-blue-600 text-white' : 'bg-[#020617] text-gray-400'
+                  className={`flex-1 py-2 rounded ${
+                    orderType === 'market'
+                      ? 'bg-blue-600'
+                      : 'bg-[#0B0F14]'
                   }`}
                 >
                   Market
@@ -231,44 +220,30 @@ const placeOrder = async (side) => {
 
                 <button
                   onClick={() => setOrderType('limit')}
-                  className={`flex-1 py-2 rounded-lg ${
-                    orderType === 'limit' ? 'bg-blue-600 text-white' : 'bg-[#020617] text-gray-400'
+                  className={`flex-1 py-2 rounded ${
+                    orderType === 'limit'
+                      ? 'bg-blue-600'
+                      : 'bg-[#0B0F14]'
                   }`}
                 >
                   Limit
                 </button>
               </div>
 
-              {/* Price */}
               {orderType === 'limit' && (
                 <input
                   type="number"
                   placeholder="Price"
                   value={limitPrice}
                   onChange={(e) => setLimitPrice(e.target.value)}
-                  className="w-full bg-[#020617] border border-white/10 text-white px-3 py-2 rounded-lg"
+                  className="w-full bg-[#0B0F14] border border-white/10 px-3 py-2 rounded"
                 />
               )}
 
-              {/* Order Value */}
-              <div className="bg-[#020617] p-3 rounded-lg border border-white/5 text-sm flex justify-between">
-                <span className="text-gray-400">Order Value</span>
-                <span className="text-white">
-                  {selectedSymbolData
-                    ? formatCurrency(
-                        (orderType === 'limit' && limitPrice
-                          ? parseFloat(limitPrice)
-                          : selectedSymbolData.price) * quantity
-                      )
-                    : '--'}
-                </span>
-              </div>
-
-              {/* Actions */}
-              <div className="flex gap-3">
+              <div className="flex gap-2 pt-2">
                 <button
                   onClick={() => setOrderModal(null)}
-                  className="flex-1 py-2 bg-gray-700 text-white rounded-lg"
+                  className="flex-1 py-2 bg-gray-700 rounded"
                 >
                   Cancel
                 </button>
@@ -278,15 +253,18 @@ const placeOrder = async (side) => {
                     placeOrder(orderModal.side);
                     setOrderModal(null);
                   }}
-                  className={`flex-1 py-2 text-white rounded-lg ${
-                    orderModal.side === 'buy' ? 'bg-green-600' : 'bg-red-600'
-                  }`}
+                  className={`flex-1 py-2 ${
+                    orderModal.side === 'buy'
+                      ? 'bg-green-600'
+                      : 'bg-red-600'
+                  } rounded`}
                 >
-                  {orderModal.side.toUpperCase()}
+                  Execute
                 </button>
               </div>
 
             </div>
+
           </div>
 
         </div>
