@@ -29,27 +29,48 @@ const TradingPage = () => {
     symbol.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const placeOrder = async (side) => {
-    setPlacingOrder(true);
+const placeOrder = async (side) => {
+  console.log("Placing order:", {
+    symbol: selectedSymbol,
+    quantity,
+    orderType,
+    limitPrice
+  });
 
-    try {
-      const orderData = {
-        symbol: selectedSymbol,
-        side,
-        quantity: parseInt(quantity),
-        order_type: orderType,
-        price: orderType === 'limit' ? parseFloat(limitPrice) : undefined
-      };
+  setPlacingOrder(true);
 
-      await axios.post(`${API}/orders`, orderData, { headers: getAuthHeader() });
+  try {
+    const orderData = {
+      symbol: selectedSymbol,
+      side,
+      quantity: parseInt(quantity),
+      order_type: orderType,
+      price: orderType === 'limit' ? parseFloat(limitPrice) : undefined
+    };
 
-      toast.success(`${side.toUpperCase()} order placed successfully!`);
-    } catch (error) {
-      toast.error('Failed to place order');
-    } finally {
-      setPlacingOrder(false);
-    }
-  };
+    console.log("API URL:", `${API}/orders`);
+    console.log("Payload:", orderData);
+
+    const res = await axios.post(
+      `${API}/orders`,
+      orderData,
+      { headers: getAuthHeader() }
+    );
+
+    console.log("Response:", res.data);
+
+    toast.success(`${side.toUpperCase()} order placed successfully!`);
+  } catch (error) {
+    console.log("ERROR:", error);
+    console.log("ERROR RESPONSE:", error.response);
+
+    toast.error(
+      error.response?.data?.detail || "Order failed"
+    );
+  } finally {
+    setPlacingOrder(false);
+  }
+};
 
   const formatCurrency = (value) => {
     return new Intl.NumberFormat('en-IN', {
