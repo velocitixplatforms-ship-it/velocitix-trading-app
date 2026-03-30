@@ -6,9 +6,11 @@ const { v4: uuidv4 } = require("uuid");
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
+
 app.get("/", (req, res) => {
   res.send("VelocitiX Backend Running");
 });
+
 let users = [
   {
     id: uuidv4(),
@@ -32,16 +34,16 @@ app.post("/api/auth/login", (req, res) => {
 
   res.json({
     token: user.id,
-      user: {
-    id: user.id,
-    email: user.email,
-    balance: user.balance
-      },
+    user: {
+      id: user.id,
+      email: user.email,
+      balance: user.balance
+    }
   });
 });
-app.get("/api/auth/me", (req, res) => {
-  const token = req.headers.authorization.split(" ")[1];
 
+app.get("/api/auth/me", (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1];
   const user = users.find(u => u.id === token);
 
   if (!user) {
@@ -54,9 +56,42 @@ app.get("/api/auth/me", (req, res) => {
     balance: user.balance
   });
 });
+
+app.get("/api/market/symbols", (req, res) => {
+  res.json([
+    {
+      symbol: "NIFTY 50",
+      name: "Nifty 50 Index",
+      price: 22500,
+      change: 120,
+      change_percent: 0.54
+    },
+    {
+      symbol: "BANKNIFTY",
+      name: "Bank Nifty",
+      price: 48000,
+      change: -150,
+      change_percent: -0.31
+    },
+    {
+      symbol: "RELIANCE",
+      name: "Reliance Industries",
+      price: 2950,
+      change: 12,
+      change_percent: 0.41
+    },
+    {
+      symbol: "INFY",
+      name: "Infosys",
+      price: 1650,
+      change: -8,
+      change_percent: -0.48
+    }
+  ]);
+});
+
 app.get("/api/account/summary", (req, res) => {
   const token = req.headers.authorization?.split(" ")[1];
-
   const user = users.find(u => u.id === token);
 
   if (!user) {
@@ -70,9 +105,9 @@ app.get("/api/account/summary", (req, res) => {
     total_pnl: 0
   });
 });
+
 app.get("/api/positions", (req, res) => {
   const token = req.headers.authorization?.split(" ")[1];
-
   const user = users.find(u => u.id === token);
 
   if (!user) {
@@ -81,48 +116,51 @@ app.get("/api/positions", (req, res) => {
 
   res.json(user.trades || []);
 });
-app.get("/balance/:userId", (req, res) => {
-  const user = users.find(u => u.id === req.params.userId);
+
+app.post("/api/orders", (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1];
+  const user = users.find(u => u.id === token);
 
   if (!user) {
-    return res.status(404).json({ message: "User not found" });
+    return res.status(401).json({ detail: "Unauthorized" });
   }
 
-  res.json({ balance: user.balance });
-});
+  const { symbol, side, quantity, order_type, price } = req.body;
 
-app.post("/trade", (req, res) => {
-  const { userId, symbol, amount } = req.body;
-
-  const user = users.find(u => u.id === userId);
-
-  if (!user) {
-    return res.status(404).json({ message: "User not found" });
+  if (!symbol || !quantity) {
+    return res.status(400).json({ detail: "Invalid order data" });
   }
 
-  if (user.balance < amount) {
-    return res.status(400).json({ message: "Insufficient balance" });
+  const executionPrice = price || 100;
+  const total = executionPrice * quantity;
+
+  if (side === "buy" && user.balance < total) {
+    return res.status(400).json({ detail: "Insufficient balance" });
   }
 
-  const trade = {
+  const order = {
     id: uuidv4(),
     symbol,
-    amount,
-    result: Math.random() > 0.5 ? "win" : "loss"
+    side,
+    quantity,
+    order_type,
+    price: executionPrice,
+    status: "executed",
+    timestamp: new Date()
   };
 
-  if (trade.result === "win") {
-    user.balance += amount;
+  if (side === "buy") {
+    user.balance -= total;
   } else {
-    user.balance -= amount;
+    user.balance += total;
   }
 
-  user.trades.push(trade);
+  user.trades.push(order);
 
   res.json({
-    message: "Trade executed",
-    trade,
-    newBalance: user.balance
+    message: "Order executed",
+    order,
+    balance: user.balance
   });
 });
 
