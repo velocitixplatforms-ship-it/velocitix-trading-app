@@ -114,7 +114,16 @@ app.get("/api/positions", (req, res) => {
     return res.status(401).json({ message: "Unauthorized" });
   }
 
-  res.json(user.trades || []);
+  const positions = (user.trades || []).map(trade => ({
+    symbol: trade.symbol,
+    quantity: trade.quantity,
+    avg_price: trade.price,
+    ltp: trade.price,
+    pnl: 0,
+    side: trade.side
+  }));
+
+  res.json(positions);
 });
 
 app.post("/api/orders", (req, res) => {
