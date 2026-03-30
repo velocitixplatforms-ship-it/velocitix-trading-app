@@ -26,7 +26,6 @@ const TradingPage = () => {
 
   const placeOrder = async (side) => {
     setPlacingOrder(true);
-
     try {
       await axios.post(
         `${API}/orders`,
@@ -39,25 +38,23 @@ const TradingPage = () => {
         },
         { headers: getAuthHeader() }
       );
-
-      toast.success(`${side.toUpperCase()} order executed`);
+      toast.success(`${side.toUpperCase()} EXECUTED`);
     } catch (err) {
-      toast.error(err.response?.data?.detail || 'Order failed');
+      toast.error(err.response?.data?.detail || 'Execution failed');
     } finally {
       setPlacingOrder(false);
     }
   };
 
   return (
-    <div className="flex h-full bg-[#0B0F14] text-white">
-
-      {/* LEFT SIDEBAR (existing stays) */}
+    <div className="flex h-full bg-gradient-to-br from-[#0A0F1C] via-[#0D1422] to-[#0A0F1C] text-white">
 
       {/* WATCHLIST */}
-      <div className="w-72 border-r border-white/[0.06] bg-[#121A24] flex flex-col">
+      <div className="w-72 border-r border-white/[0.05] bg-black/20 backdrop-blur-xl flex flex-col">
 
-        <div className="px-3 py-3 border-b border-white/[0.06] text-xs text-gray-400 tracking-wide">
-          WATCHLIST
+        <div className="px-4 py-3 border-b border-white/[0.05]">
+          <div className="text-[10px] text-gray-500 tracking-widest">MARKET WATCH</div>
+          <div className="text-sm font-semibold mt-1">Equity Universe</div>
         </div>
 
         <div className="flex-1 overflow-y-auto">
@@ -65,144 +62,173 @@ const TradingPage = () => {
             <div
               key={s.symbol}
               onClick={() => setSelectedSymbol(s.symbol)}
-              className={`px-3 py-2 cursor-pointer border-b border-white/[0.04] hover:bg-[#1A2330] ${
-                selectedSymbol === s.symbol ? 'bg-[#1A2330]' : ''
+              className={`px-4 py-3 cursor-pointer border-b border-white/[0.03] transition-all ${
+                selectedSymbol === s.symbol
+                  ? 'bg-white/[0.04]'
+                  : 'hover:bg-white/[0.02]'
               }`}
             >
               <div className="flex justify-between items-center">
-                <div className="text-sm font-semibold tracking-tight">
+                <span className="text-sm font-semibold tracking-tight">
                   {s.symbol}
-                </div>
-                <div className="text-sm font-mono">
+                </span>
+                <span className="text-sm font-mono text-gray-200">
                   {format(s.price)}
-                </div>
+                </span>
               </div>
 
               <div className="flex justify-between mt-1">
-                <div className="text-[11px] text-gray-500">
+                <span className="text-[11px] text-gray-500 truncate w-32">
                   {s.name}
-                </div>
-                <div className={`text-[11px] font-medium ${
-                  s.change >= 0 ? 'text-green-500' : 'text-red-500'
+                </span>
+                <span className={`text-[11px] font-medium ${
+                  s.change >= 0 ? 'text-emerald-400' : 'text-red-400'
                 }`}>
                   {s.change >= 0 ? '+' : ''}
                   {s.change_percent.toFixed(2)}%
-                </div>
+                </span>
               </div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* CENTER PANEL */}
-      <div className="flex-1 flex flex-col bg-[#0B0F14]">
+      {/* CENTER */}
+      <div className="flex-1 flex flex-col">
 
-        {/* Header */}
-        <div className="px-6 py-4 border-b border-white/[0.06] flex justify-between items-center">
-          <div>
-            <div className="text-lg font-semibold tracking-tight">
-              {selectedSymbol}
+        {/* INSTRUMENT HEADER */}
+        <div className="px-6 py-4 border-b border-white/[0.05] bg-black/20 backdrop-blur-xl">
+          <div className="flex items-center justify-between">
+
+            <div>
+              <div className="text-xl font-semibold tracking-tight">
+                {selectedSymbol}
+              </div>
+
+              <div className="flex items-center gap-3 mt-1">
+                <span className="text-lg font-mono text-gray-200">
+                  {selected ? format(selected.price) : '--'}
+                </span>
+
+                {selected && (
+                  <span className={`text-sm font-medium ${
+                    selected.change >= 0
+                      ? 'text-emerald-400'
+                      : 'text-red-400'
+                  }`}>
+                    {selected.change >= 0 ? '+' : ''}
+                    {selected.change} ({selected.change_percent.toFixed(2)}%)
+                  </span>
+                )}
+              </div>
             </div>
-            <div className="text-sm text-gray-400 font-mono">
-              {selected ? format(selected.price) : '--'}
+
+            <div className="text-xs text-gray-500">
+              NSE • REALTIME
             </div>
+
           </div>
         </div>
 
-        {/* Chart Area */}
+        {/* CHART AREA */}
         <div className="flex-1 relative">
-          <div className="absolute inset-0 flex items-center justify-center text-gray-600 text-sm">
-            No chart loaded
+
+          {/* Grid background */}
+          <div className="absolute inset-0 opacity-[0.05] bg-[linear-gradient(to_right,#ffffff10_1px,transparent_1px),linear-gradient(to_bottom,#ffffff10_1px,transparent_1px)] bg-[size:40px_40px]" />
+
+          <div className="absolute inset-0 flex items-center justify-center text-gray-600 text-sm tracking-wide">
+            Professional Charting Engine (Coming Next)
           </div>
         </div>
       </div>
 
       {/* ORDER PANEL */}
-      <div className="w-80 border-l border-white/[0.06] bg-[#121A24] flex flex-col">
+      <div className="w-80 border-l border-white/[0.05] bg-black/20 backdrop-blur-xl flex flex-col">
 
-        {/* Header */}
-        <div className="p-4 border-b border-white/[0.06]">
-          <div className="text-xs text-gray-400 mb-1 tracking-wide">ORDER</div>
-          <div className="text-lg font-semibold">{selectedSymbol}</div>
+        <div className="p-5 border-b border-white/[0.05]">
+          <div className="text-[10px] text-gray-500 tracking-widest">ORDER WINDOW</div>
+          <div className="text-lg font-semibold mt-1">{selectedSymbol}</div>
         </div>
 
-        <div className="p-4 space-y-4">
+        <div className="p-5 space-y-5">
 
-          {/* Buy Sell */}
+          {/* BUY SELL */}
           <div className="grid grid-cols-2 gap-2">
             <button
               onClick={() => placeOrder('buy')}
-              disabled={placingOrder}
-              className="py-2 bg-green-600 hover:bg-green-500 rounded text-sm font-semibold"
+              className="py-2 bg-emerald-500/90 hover:bg-emerald-500 rounded text-sm font-semibold"
             >
               BUY
             </button>
 
             <button
               onClick={() => placeOrder('sell')}
-              disabled={placingOrder}
-              className="py-2 bg-red-600 hover:bg-red-500 rounded text-sm font-semibold"
+              className="py-2 bg-red-500/90 hover:bg-red-500 rounded text-sm font-semibold"
             >
               SELL
             </button>
           </div>
 
-          {/* Order Type */}
-          <div className="flex bg-[#0B0F14] rounded p-1">
-            <button
-              onClick={() => setOrderType('market')}
-              className={`flex-1 py-1 text-xs rounded ${
-                orderType === 'market'
-                  ? 'bg-blue-600 text-white'
-                  : 'text-gray-400'
-              }`}
-            >
-              MARKET
-            </button>
+          {/* ORDER TYPE */}
+          <div>
+            <div className="text-[10px] text-gray-500 mb-2 tracking-widest">ORDER TYPE</div>
+            <div className="flex bg-[#0B0F14] rounded p-1">
+              <button
+                onClick={() => setOrderType('market')}
+                className={`flex-1 py-1 text-xs rounded ${
+                  orderType === 'market'
+                    ? 'bg-blue-600 text-white'
+                    : 'text-gray-400'
+                }`}
+              >
+                MARKET
+              </button>
 
-            <button
-              onClick={() => setOrderType('limit')}
-              className={`flex-1 py-1 text-xs rounded ${
-                orderType === 'limit'
-                  ? 'bg-blue-600 text-white'
-                  : 'text-gray-400'
-              }`}
-            >
-              LIMIT
-            </button>
+              <button
+                onClick={() => setOrderType('limit')}
+                className={`flex-1 py-1 text-xs rounded ${
+                  orderType === 'limit'
+                    ? 'bg-blue-600 text-white'
+                    : 'text-gray-400'
+                }`}
+              >
+                LIMIT
+              </button>
+            </div>
           </div>
 
-          {/* Quantity */}
+          {/* QTY */}
           <div>
-            <div className="text-[11px] text-gray-500 mb-1">QUANTITY</div>
+            <div className="text-[10px] text-gray-500 mb-1 tracking-widest">QUANTITY</div>
             <input
               type="number"
               value={quantity}
               onChange={(e) => setQuantity(e.target.value)}
-              className="w-full bg-[#0B0F14] border border-white/10 px-3 py-2 rounded text-white"
+              className="w-full bg-[#0B0F14] border border-white/10 px-3 py-2 rounded text-white focus:outline-none focus:border-blue-500"
             />
           </div>
 
-          {/* Price */}
+          {/* PRICE */}
           {orderType === 'limit' && (
             <div>
-              <div className="text-[11px] text-gray-500 mb-1">PRICE</div>
+              <div className="text-[10px] text-gray-500 mb-1 tracking-widest">PRICE</div>
               <input
                 type="number"
                 value={limitPrice}
                 onChange={(e) => setLimitPrice(e.target.value)}
-                className="w-full bg-[#0B0F14] border border-white/10 px-3 py-2 rounded text-white"
+                className="w-full bg-[#0B0F14] border border-white/10 px-3 py-2 rounded text-white focus:outline-none focus:border-blue-500"
               />
             </div>
           )}
+
         </div>
 
-        {/* Bottom */}
-        <div className="mt-auto p-4 border-t border-white/[0.06]">
+        {/* FOOTER */}
+        <div className="mt-auto p-5 border-t border-white/[0.05]">
 
-          <div className="flex justify-between text-sm mb-2">
-            <span className="text-gray-400">Order Value</span>
-            <span className="font-mono">
+          <div className="flex justify-between text-sm mb-3">
+            <span className="text-gray-500">Estimated Value</span>
+            <span className="font-mono text-white">
               {selected
                 ? format(
                     (orderType === 'limit' && limitPrice
@@ -215,15 +241,13 @@ const TradingPage = () => {
 
           <button
             onClick={() => placeOrder('buy')}
-            className="w-full py-2 bg-blue-600 hover:bg-blue-500 rounded font-semibold"
+            className="w-full py-2 bg-blue-600 hover:bg-blue-500 rounded font-semibold tracking-wide"
           >
-            PLACE ORDER
+            EXECUTE ORDER
           </button>
 
         </div>
-
       </div>
-
     </div>
   );
 };
